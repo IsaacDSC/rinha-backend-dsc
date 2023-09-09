@@ -1,0 +1,126 @@
+# #1.5 CPUs e 3.0GB
+# version: '3.5'
+
+# networks:
+#   proxy:
+#     driver: bridge
+
+# services:
+#   application:
+#     container_name: application
+#     build:
+#       context: .
+#       dockerfile: ./dockerfile
+#     volumes:
+#       - .:/usr/app
+#     restart: "on-failure"
+#     depends_on:
+#       - db
+#     networks:
+#       - proxy
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '0.25'
+#           memory: '0.5GB'
+
+#   nginx:
+#     image: nginx
+#     volumes:
+#       - ./nginx.conf:/etc/nginx/nginx.conf
+#     ports:
+#       - 3000:3000
+#     restart: always
+#     depends_on:
+#       - application
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '0.25'
+#           memory: '0.5GB'
+#     networks:
+#       - proxy
+
+#   pgdb:
+#     container_name: pgdb
+#     image: postgres
+#     restart: always
+#     environment:
+#       POSTGRES_USER: root
+#       POSTGRES_PASSWORD: root
+#       POSTGRES_DB: RinhaBackend
+#     ports:
+#       - "4321:4321"
+#     deploy:
+#       resources:
+#         limits:
+#           cpus: '0.75'
+#           memory: '1.5GB'
+#     networks:
+#       - proxy
+
+
+version: "3"
+
+networks:
+  proxy:
+    driver: bridge
+
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    restart: always
+    networks:
+      - proxy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '0.5GB'
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 3000:3000
+    restart: always
+    depends_on:
+      - app
+    networks:
+      - proxy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '0.5GB'
+
+  pgdb:
+    container_name: pgdb
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: RinhaBackend
+    ports:
+      - "4321:4321"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: '1.5GB'
+    networks:
+      - proxy
+
+  cached:
+    image: redis
+    container_name: cached
+    restart: always
+    ports:
+      - '6378:6378'
+    networks:
+      - proxy
