@@ -72,7 +72,10 @@ services:
     build:
       context: .
       dockerfile: ./dockerfile
-    restart: always
+    restart: on-failure
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL:localhost:6379
     networks:
       - proxy
     deploy:
@@ -84,10 +87,10 @@ services:
   nginx:
     image: nginx
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./volumes/nginx/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - 3000:3000
-    restart: always
+    restart: on-failure
     depends_on:
       - app
     networks:
@@ -101,26 +104,29 @@ services:
   pgdb:
     container_name: pgdb
     image: postgres
-    restart: always
+    restart: on-failure
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       POSTGRES_DB: RinhaBackend
+    volumes:
+        - ./volumes/pg/postgres-data:/var/lib/postgresql/data
+        - ./config/schema/schema.sql:/docker-entrypoint-initdb.d/create_tables.sql
     ports:
-      - "4321:4321"
+      - "4321:5432"
     deploy:
       resources:
         limits:
           cpus: '0.75'
           memory: '1.5GB'
-    networks:
-      - proxy
+    # networks:
+    #   - proxy
 
   cached:
     image: redis
     container_name: cached
-    restart: always
+    restart: on-failure
     ports:
       - '6378:6378'
-    networks:
-      - proxy
+    # networks:
+    #   - proxy
