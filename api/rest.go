@@ -14,8 +14,8 @@ import (
 )
 
 func StartAPI() {
-	defer config.CloseConnectionRedis()
-	defer config.DbClose()
+	// defer config.CloseConnectionRedis()
+	// defer config.DbClose()
 	env, err := filepath.Abs("./.env")
 	if err != nil {
 		log.Panic(err.Error())
