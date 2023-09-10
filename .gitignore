@@ -20,3 +20,6 @@
 # Go workspace file
 go.work
 steps.txt
+.env
+volumes/pg
+tmp
