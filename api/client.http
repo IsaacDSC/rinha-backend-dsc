@@ -1,0 +1,28 @@
+### HEALTH CHECK
+GET http://localhost:3000/
+
+### CREATE PERSON
+POST http://localhost:3000/pessoas
+Content-Type: application/json
+
+{
+    "apelido" : "isaacdsc10",
+    "nome" : "isaac silva",
+    "nascimento" : "2000-10-01",
+    "stack" : ["C#", "Node", "Golang"]
+}
+
+
+### RETRIVIE PERSON
+GET http://localhost:3000/pessoas/a54d9d2d-0598-4735-bfc4-c52e429951c1
+Content-Type: application/json
+
+
+### SEARCH PERSON
+GET http://localhost:3000/pessoas?stack=C%23
+Content-Type: application/json
+
+
+### COUNTER PERSON
+GET http://localhost:3000/contagem-pessoas
+Content-Type: application/json
