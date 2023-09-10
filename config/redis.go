@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"sync"
 
@@ -13,9 +12,10 @@ var redisClient *redis.Client
 var onceRedis sync.Once
 
 func StartConnectionRedis() *redis.Client {
+	env := GetEnv()
 	onceRedis.Do(func() {
 		redisClient = redis.NewClient(&redis.Options{
-			Addr: fmt.Sprintf("%s:%s", "localhost", "6379"),
+			Addr: env.REDIS_URL,
 			DB:   0,
 		})
 		err := redisClient.Ping(context.Background()).Err()
